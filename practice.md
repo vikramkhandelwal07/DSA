@@ -225,3 +225,164 @@ list(zip(L1,L2))
 ```
 
 ---
+
+## Tuples
+
+A tuple in Python is similar to a list. The difference between the two is that we cannot change the elements of a tuple once it is assigned whereas we can change the elements of a list.
+
+In short, a tuple is an immutable list. A tuple can not be changed in any way once it is created.
+
+Characterstics
+
+- Ordered
+- Unchangeble
+- Allows duplicate
+
+```python
+
+# tuple unpacking
+a,b,c = (1,2,3)
+print(a,b,c)
+--->
+a,b,*others = (1,2,3,4)
+print(a,b)
+print(others)
+--->
+# zipping tuples
+a = (1,2,3,4)
+b = (5,6,7,8)
+
+tuple(zip(a,b))
+--------------------------------
+output : ((1, 5), (2, 6), (3, 7), (4, 8))
+```
+---
+
+## Sets
+
+A set is an unordered collection of items. Every set element is unique (no duplicates) and must be immutable (cannot be changed).
+
+However, a set itself is mutable. We can add or remove items from it.
+
+Sets can also be used to perform mathematical set operations like union, intersection, symmetric difference, etc.
+
+Characterstics:
+
+- Unordered
+- Mutable
+- No Duplicates
+- Can't contain mutable data types.
+
+```python
+S = {1,2,3,4}
+# add
+S.add(5)
+---------->
+output: {1, 2, 3, 4, 5}
+
+S.update([5,6,7])
+print(S)
+---------->
+output :{1, 2, 3, 4, 5, 6, 7}
+
+s = {1, 2, 3, 4, 5}
+s.discard(3)  # Removes 3 from the set
+print(s)  # Output: {1, 2, 4, 5}
+
+s.discard(6)  # Does nothing, as 6 is not in the set
+print(s)  # Output: {1, 2, 4, 5}
+
+```
+
+`Comparing remove() and discard()`:
+
+The main difference between remove() and discard() is how they handle cases where the element is not found in the set. discard() does nothing, while remove() raises an error.
+Choose discard() when you want to avoid potential errors if the element might not be present.
+Choose remove() when you want to be notified of errors if the element is not found.
+
+```python
+s = {1, 2, 3, 4, 5}
+element = s.pop()  # Removes and returns a random element (e.g., 3)
+print(element)  # Output: 3 (or any other element from the set)
+print(s)  # Output: {1, 2, 4, 5} (or the set without the popped element)
+
+s.clear()  # Empties the set
+s.pop()  # Raises KeyError, as the set is now empty
+
+```
+
+```python
+set1 = {1, 2, 3, 4, 5}
+set2 = {4, 5, 6, 7, 8}
+
+# Union
+union_set_symbol = set1 | set2
+union_set_word = set1.union(set2)
+print("Union:", union_set_symbol)  # Output: {1, 2, 3, 4, 5, 6, 7, 8}
+print("Union:", union_set_word)  # Output: {1, 2, 3, 4, 5, 6, 7, 8}
+
+
+# Intersection
+intersection_set_symbol = set1 & set2
+intersection_set_word = set1.intersection(set2)
+print("Intersection:", intersection_set_symbol)  # Output: {4, 5}
+print("Intersection:", intersection_set_word)  # Output: {4, 5}
+
+
+# Difference
+difference_set_symbol = set1 - set2
+difference_set_word = set1.difference(set2)
+print("Difference (set1 - set2):", difference_set_symbol)  # Output: {1, 2, 3}
+print("Difference (set1 - set2):", difference_set_word)  # Output: {1, 2, 3}
+
+difference_set2_symbol = set2 - set1
+difference_set2_word = set2.difference(set1)
+print("Difference (set2 - set1):", difference_set2_symbol)  # Output: {8, 6, 7}
+print("Difference (set2 - set1):", difference_set2_word)  # Output: {8, 6, 7}
+
+
+# Symmetric Difference
+symmetric_difference_set_symbol = set1 ^ set2
+symmetric_difference_set_word = set1.symmetric_difference(set2)
+print("Symmetric Difference:", symmetric_difference_set_symbol)  # Output: {1, 2, 3, 6, 7, 8}
+print("Symmetric Difference:", symmetric_difference_set_word)  # Output: {1, 2, 3, 6, 7, 8}
+
+```
+
+---
+
+## Dictionary
+
+Dictionary in Python is a collection of keys values, used to store data values like a map, which, unlike other data types which hold only a single value as an element.
+
+In some languages it is known as map or assosiative arrays.
+
+dict = { 'name' : 'Vikram' , 'age' : 13 , 'gender' : 'male' }
+
+Characterstics:
+
+- Mutable
+- Indexing has no meaning
+- keys can't be duplicated
+- keys can't be mutable items.
+  
+## functions in dictionary
+
+.get()
+
+### dictionary comprehension
+
+### "{`key:value` for `vars` in `iterable`}"
+
+```python
+# using zip
+days = ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+temp_C = [30.5,32.6,31.8,33.4,29.8,30.2,29.9]
+
+{i:j for (i,j) in zip(days,temp_C)}
+----------------->
+output:{'Sunday': 30.5,
+ 'Monday': 32.6,'Tuesday': 31.8,'Wednesday': 33.4,
+ 'Thursday': 29.8,'Friday': 30.2,'Saturday': 29.9}
+
+```
