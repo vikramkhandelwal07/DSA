@@ -24,7 +24,7 @@ help(modules)
 
 ### `Problem 3`:Write a program to print the following pattern
 
-        *
+         *
        * * *
      * * * * *
 
@@ -256,6 +256,7 @@ tuple(zip(a,b))
 --------------------------------
 output : ((1, 5), (2, 6), (3, 7), (4, 8))
 ```
+
 ---
 
 ## Sets
