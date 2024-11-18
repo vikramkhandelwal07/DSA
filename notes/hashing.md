@@ -1,5 +1,5 @@
 
-## `Hashing`:
+# `Hashing`
 
 ```python
 
@@ -31,5 +31,14 @@ print("Program completed.")
 
 ---
 
-## character hashing
+```python
+#  a nice way to take input of array through functions
+def get_integer_input(prompt):
+    return int(input(prompt))
 
+def get_list_input(prompt):
+    return [int(num) for num in input(prompt).split()]
+
+n = get_integer_input("Enter the size of the array: ")
+arr = get_list_input(f"Enter {n} integers separated by spaces: ")
+```
