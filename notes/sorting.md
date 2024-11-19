@@ -78,3 +78,64 @@ result = insertionSort(arr)
 print("Your array after insertion sort is:", result)
    
 ```
+
+## mergeSort
+
+- Divide and merge
+- time complexity O(N*logN)
+
+```python
+
+
+def merge(arr, low, mid, high):
+    temp = []
+    left = low
+    right = mid + 1
+
+    # Merge two halves into the temp array
+    while left <= mid and right <= high:
+        if arr[left] <= arr[right]:
+            temp.append(arr[left])
+            left += 1
+        else:
+            temp.append(arr[right])
+            right += 1
+
+    # Copy remaining elements of left half, if any
+    while left <= mid:
+        temp.append(arr[left])
+        left += 1
+
+    # Copy remaining elements of right half, if any
+    while right <= high:
+        temp.append(arr[right])
+        right += 1
+
+    # Copy the sorted temp array back to the original array
+    for i in range(len(temp)):
+        arr[low + i] = temp[i]
+
+
+def mergeSort(arr, low, high):
+    if low < high:  # Base case: when low is not less than high, return
+        mid = (low + high) // 2
+        mergeSort(arr, low, mid)
+        mergeSort(arr, mid + 1, high)
+        merge(arr, low, mid, high)
+    return arr
+
+
+# Example usage
+arr = [76, 23, 199, 3, 3, 98, 98, 65, 32, 11, 2]
+low = 0
+high = len(arr) - 1
+result = mergeSort(arr, low, high)
+print("Your array after mergesort is:", result)
+```
+
+## QuicKSort
+
+```python
+
+
+```
