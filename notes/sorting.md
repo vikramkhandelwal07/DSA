@@ -136,6 +136,42 @@ print("Your array after mergesort is:", result)
 ## QuicKSort
 
 ```python
+def partition(arr, low, high):
+    pivot = arr[low]
+    i = low
+    j = high
+
+    while i < j:
+        # Find the first element greater than the pivot
+        while i <= high and arr[i] <= pivot:
+            i += 1
+        # Find the first element smaller than or equal to the pivot
+        while j >= low and arr[j] > pivot:
+            j -= 1
+        # Swap elements if i < j
+        if i < j:
+            arr[i], arr[j] = arr[j], arr[i]
+
+    # Place pivot in the correct position
+    arr[low], arr[j] = arr[j], arr[low]
+    return j
+
+
+def quickSort(arr, low, high):
+    if low < high:
+        # Partition the array and get the pivot index
+        partitionIndex = partition(arr, low, high)
+        # Sort the left and right subarrays
+        quickSort(arr, low, partitionIndex - 1)
+        quickSort(arr, partitionIndex + 1, high)
+
+
+# Example usage
+arr = [76, 23, 199, 3, 3, 98, 98, 65, 32, 11, 2]
+low = 0
+high = len(arr) - 1
+quickSort(arr, low, high)
+print("Your array after quicksort is:", arr)
 
 
 ```
