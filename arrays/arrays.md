@@ -54,3 +54,80 @@ def print2largest(arr):
     return secondLargest
     
 ```
+
+## left rotate the array by 1 place
+
+ek for loop mai starting from 1 arr ka 0 elemnt ko temp mai store kardiya and then har 
+arr[i-1] ko arr[i] ka value dediya and last mai last element ko temp dediya and then return
+
+```python
+def rotateArray(arr):
+    temp = arr[0]
+    for i in range(1,len(arr)):
+        arr[i-1] =  arr[i]
+        
+    arr[len(arr)-1] = temp
+    
+    return arr
+
+```
+
+
+## Left rotate array by d places
+
+
+```python
+def rotateArray(arr, n, d):
+    # To handle cases where d is greater than n
+    d = d % n
+    # Slice and concatenate the array
+    return arr[d:] + arr[:d]
+```
+##### brute Force
+```python
+arr = [1, 2, 3, 4, 5, 6, 7]
+d = 3
+n= len(arr)
+temp = arr[0:d]
+print(temp)
+for i in range(d,n):
+  arr[i-d] = arr[i]
+# idhar ek naya variable j lelenge 
+j = 0
+for i in range(n-d,n):
+  arr[i] = temp[j]
+  j +=1
+
+print(arr) 
+``` 
+##### better
+```python
+arr = [1, 2, 3, 4, 5, 6, 7]
+d = 3
+n= len(arr)
+temp = arr[0:d]
+print(temp)
+for i in range(d,n):
+  arr[i-d] = arr[i]
+
+for i in range(n-d,n):
+  arr[i] = temp[i-(n-d)]
+  # temp[i-(n-d)] : reason bcoz we are standing at n-d and if we substract n-d we get 0 ,1 2 
+  # so humko ek naya variable nhi lena padega
+  j +=1
+print(arr) 
+```
+##### best
+1stly array ko reverse kardiya and then array ke starting elements upto k using slicing nums[:k] ko reverse karke usme hi store kardiya using reversed and then same with [k:] k se last tak and return original array
+```python
+def rotateArray(nums: List[int], n: int ,k: int ) :
+  
+  n = len(nums)
+  k %= n
+  nums.reverse()
+  nums[:k] = reversed(nums[:k])
+  nums[k:] = reversed(nums[k:])
+  
+  return nums
+```
+
