@@ -54,8 +54,8 @@ else:
     print(f"Your target element {target} is not in the list.")
 ```
 
-
 ## 2. Lower Bound
+
 ```python
 def Lowerbound(nums,x,n):
   low = 0
