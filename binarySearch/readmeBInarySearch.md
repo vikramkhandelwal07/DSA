@@ -2,7 +2,7 @@
 
 # 1. Binary Search — Iterative Approach
 
-## 📝 Problem Statement
+##  Problem Statement
 Given a sorted array `nums` and a target value `target`, return the **index of `target`** if it exists in the array. Otherwise, return `-1`.
 ---
 ##  Approach 
@@ -15,9 +15,9 @@ Har step pe:
 Jab tak `low > high` nahi ho jata, tab tak repeat karte hain. Agar nahi mila, to `-1` return karte hain.
 ---
 ##  Patterns / Concepts
-✅ Binary Search  
-✅ Two Pointer Technique  
-✅ Divide and Conquer  
+ Binary Search  
+ Two Pointer Technique  
+ Divide and Conquer  
 
 ---
 ## Time Complexity
@@ -33,12 +33,12 @@ Jab tak `low > high` nahi ho jata, tab tak repeat karte hain. Agar nahi mila, to
 `your target element 56 is at index: 8`
 ---
 
-## 🚧 Edge Cases
-✅ **Edge Case 1:**  
+##  Edge Cases
+**Edge Case 1:**  
 **Input:** `nums = []`, `target = 5`  
 **Output:** `-1` (array is empty)
 
-✅ **Edge Case 2:**  
+ **Edge Case 2:**  
 **Input:** `nums = [1]`, `target = 1`  
 **Output:** `0` (single element found)
 ---  
