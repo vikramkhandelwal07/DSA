@@ -1196,3 +1196,944 @@ arr = [0,3,4,7,10]
 cows = 4
 print(aggresiveCows(arr, cows))  # Output: 3
 ```
+
+# Book Allocation Problem — Binary Search on Answer
+
+## Problem Statement
+You are given an array `arr` where `arr[i]` is the number of pages in the `i-th` book and an integer `m` representing the number of students.  
+Allocate books to students such that:
+- Each student gets at least one book.
+- Each book is allocated to exactly one student.
+- Books are allocated in **contiguous order**.
+- The **maximum number of pages assigned to a student is minimized**.
+
+Return the minimum possible maximum pages a student has to read.
+
+### Example Question Context
+This is a **binary search on answer space** problem — as the maximum number of pages per student increases, the number of students required decreases.  
+We need to find the smallest maximum number of pages such that all books can be allocated to `m` students.
+
+## Approach / तरीका (English + Hinglish)
+### English
+We binary search over the possible maximum pages per student in range `[max(arr), sum(arr)]`:
+- At each step, assume `mid` as the maximum pages.
+- Use `countStudents()` to count how many students are needed if no student reads more than `mid` pages.
+- If required students > `m`, increase `mid` (`low = mid+1`).
+- Otherwise, try a smaller `mid` (`high = mid-1`).
+
+When the loop ends, `low` holds the minimum possible maximum pages.
+
+### Hinglish
+Hum maximum pages per student par binary search karte hain (`[max(arr), sum(arr)]`):
+- Har step pe `mid` ko assume karke check karte hain ki `m` students me distribute ho sakte hain ya nahi.
+- `countStudents()` se students count karte hain.
+- Agar students > `m`, to zyada pages allow karte hain (`low = mid+1`), warna kam karte hain (`high = mid-1`).
+
+Loop ke baad `low` me minimum maximum pages hota hai.
+
+## Patterns / Concepts
+Binary Search on Answer  
+Greedy Check  
+Search Space Reduction
+
+## Time Complexity
+**O(n * log(sum(arr) - max(arr)))** — binary search + linear check each step.
+
+## Space Complexity
+**O(1)** — constant space.
+
+## Example
+**Input:**  
+`arr = [25,46,28,49,24]`, `m = 4`
+
+**Output:**  
+`46` — minimum of the maximum pages allocated per student is 46.
+
+## Edge Cases
+**Edge Case 1:**  
+**Input:** `arr = [10,20,30,40]`, `m = 2`  
+**Output:** `60`
+
+**Edge Case 2:**  
+**Input:** `arr = [5,10,15]`, `m = 4`  
+**Output:** `-1` (not enough books)
+
+## Code with Comments
+```python
+# Count number of students needed if no student reads more than 'pages' pages
+def countStudents(arr, pages):
+    student = 1
+    pageCount = 0
+    for num in arr:
+        if pageCount + num <= pages:
+            pageCount += num
+        else:
+            student += 1
+            pageCount = num
+    return student
+
+# Main function: book allocation
+def booksAllocation(arr, m, n):
+    if m > n:
+        return -1  # not enough books
+
+    low = max(arr)  # each student must at least read one biggest book
+    high = sum(arr)
+
+    while low <= high:
+        mid = (low + high) // 2
+        students = countStudents(arr, mid)
+        if students > m:
+            low = mid + 1  # need to allow more pages
+        else:
+            high = mid - 1  # try to minimize max pages
+
+    return low
+
+# Example call
+arr = [25, 46, 28, 49, 24] 
+m = 4
+n = len(arr)
+print(booksAllocation(arr, m, n))  # Output: 46
+```
+
+# Split Array Largest Sum — Binary Search on Answer
+
+## Problem Statement
+You are given an array `nums` of non-negative integers and an integer `k`.  
+Split the array into `k` or fewer non-empty contiguous subarrays such that the largest sum among these subarrays is minimized.  
+Return this minimum largest sum.
+
+### Example Question Context
+This is a **binary search on answer space** problem — as the maximum allowed subarray sum increases, the number of subarrays required decreases.  
+We aim to find the smallest maximum sum such that we can split the array into at most `k` parts.
+
+## Approach / तरीका (English + Hinglish)
+### English
+We binary search over possible maximum sums in the range `[max(nums), sum(nums)]`:
+- For each `mid`, use `calculateSum()` to count how many subarrays are needed if no subarray has sum > `mid`.
+- If more than `k` subarrays are needed, we need to allow larger sums (`low = mid+1`).
+- Else, try to minimize the sum (`high = mid-1`).
+
+When the loop ends, `low` holds the minimum largest sum.
+
+### Hinglish
+Hum possible maximum sum par binary search karte hain (`[max(nums), sum(nums)]`):
+- Har `mid` par `calculateSum()` se count karte hain ki kitne subarrays banenge agar kisi ka sum `mid` se zyada na ho.
+- Agar subarrays > `k`, to zyada sum allow karte hain (`low = mid+1`), warna kam karte hain (`high = mid-1`).
+
+Loop ke baad `low` me minimum largest sum hota hai.
+
+## Patterns / Concepts
+Binary Search on Answer  
+Greedy Check  
+Search Space Reduction
+
+## Time Complexity
+**O(n * log(sum(nums) - max(nums)))** — binary search + linear scan each check.
+
+## Space Complexity
+**O(1)** — constant space.
+
+## Example
+**Input:**  
+`nums = [7,2,5,10,8]`, `k = 2`
+
+**Output:**  
+`18` — split as `[7,2,5]` and `[10,8]` with max sum 18.
+
+## Edge Cases
+**Edge Case 1:**  
+**Input:** `nums = [1,2,3,4,5]`, `k = 2`  
+**Output:** `9`
+
+**Edge Case 2:**  
+**Input:** `nums = [1,4,4]`, `k = 3`  
+**Output:** `4`
+
+## Code with Comments
+```python
+from typing import List
+
+class Solution:
+    def splitArray(self, nums: List[int], k: int) -> int:
+        # Helper: count subarrays needed if no subarray > mid
+        def calculateSum(nums, mid):
+            subArray = 1
+            numberSum = 0
+            for num in nums:
+                if numberSum + num <= mid:
+                    numberSum += num
+                else:
+                    subArray += 1
+                    numberSum = num
+            return subArray
+
+        low = max(nums)  # min possible max sum
+        high = sum(nums)  # max possible max sum
+
+        while low <= high:
+            mid = (low + high) // 2
+            if calculateSum(nums, mid) > k:
+                low = mid + 1  # need larger sums
+            else:
+                high = mid - 1  # try to minimize
+
+        return low
+```
+
+# Painter's Partition Problem — Binary Search on Answer
+
+## Problem Statement
+You are given an array `boards` where `boards[i]` represents the length of the `i-th` board, and an integer `k` representing the number of painters.  
+You need to paint all the boards such that:
+- Each board is painted by exactly one painter.
+- Each painter paints **contiguous** boards.
+- The goal is to minimize the maximum time taken by any painter.
+
+Return this minimum possible maximum time.
+
+### Example Question Context
+This is a **binary search on answer space** problem — as the maximum time per painter increases, fewer painters are needed.  
+We aim to find the smallest maximum time such that all boards can be painted by `k` painters.
+
+## Approach / तरीका (English + Hinglish)
+### English
+We binary search over the maximum time per painter in range `[max(boards), sum(boards)]`:
+- For each `mid`, use `countPainters()` to check how many painters are required if no painter paints more than `mid` time.
+- If more than `k` painters are needed, increase `mid` (`low = mid+1`).
+- Else, try a smaller `mid` (`high = mid-1`).
+
+Finally, `low` holds the minimum maximum time.
+
+### Hinglish
+Hum maximum time per painter par binary search karte hain (`[max(boards), sum(boards)]`):
+- Har `mid` pe `countPainters()` se check karte hain ki kitne painters chahiye.
+- Agar painters > `k`, to zyada time allow karte hain (`low = mid+1`), warna kam karte hain (`high = mid-1`).
+
+Loop ke baad `low` me answer hota hai.
+
+## Patterns / Concepts
+Binary Search on Answer  
+Greedy Check  
+Search Space Reduction
+
+## Time Complexity
+**O(n * log(sum(boards) - max(boards)))** — binary search + linear scan each step.
+
+## Space Complexity
+**O(1)** — constant space.
+
+## Example
+**Input:**  
+`boards = [10,20,30,40]`, `k = 2`
+
+**Output:**  
+`60` — split as `[10,20,30]` and `[40]` with max time 60.
+
+## Edge Cases
+**Edge Case 1:**  
+**Input:** `boards = [5,5,5,5]`, `k = 2`  
+**Output:** `10`
+
+**Edge Case 2:**  
+**Input:** `boards = [10,20,30]`, `k = 1`  
+**Output:** `60`
+
+## Code with Comments
+```python
+# Count number of painters needed if no painter paints more than 'time'
+def countPainters(boards, time):
+    painters = 1
+    boardsPainter = 0
+    for board in boards:
+        if boardsPainter + board <= time:
+            boardsPainter += board
+        else:
+            painters += 1
+            boardsPainter = board
+    return painters
+
+# Main function: Painter's Partition
+def findLargestMinDistance(boards, k):
+    low = max(boards)  # each painter must paint at least the largest board
+    high = sum(boards)  # one painter paints all
+
+    while low <= high:
+        mid = (low + high) // 2
+        painters = countPainters(boards, mid)
+        if painters > k:
+            low = mid + 1  # need more time per painter
+        else:
+            high = mid - 1  # try to minimize
+
+    return low
+
+# Example call
+boards = [10, 20, 30, 40]
+k = 2
+ans = findLargestMinDistance(boards, k)
+print("The answer is:", ans)  # Output: 60
+```
+
+
+# Median of Two Sorted Arrays — Binary Search
+
+## Problem Statement
+You are given two sorted arrays `a` and `b`.  
+Find the median of the two sorted arrays combined, in **O(log(min(n1, n2)))** time.
+
+### Example Question Context
+This is a classic **binary search on partition point** problem.  
+We need to partition both arrays such that the left half contains exactly half of the elements and the largest element in the left half ≤ smallest element in the right half.
+
+## Approach / तरीका (English + Hinglish)
+### English
+We binary search on the smaller array to find a valid partition:
+- At each step, partition array `a` at index `mid1` and array `b` at `left - mid1`.
+- Compare `l1, r1` (left/right of `a`) and `l2, r2` (left/right of `b`).
+- If `l1 ≤ r2` and `l2 ≤ r1`, a valid partition is found:
+  - If total number of elements is even: median is average of max(left) and min(right).
+  - If odd: median is max of left.
+- If `l1 > r2`, move partition in `a` left (`high = mid1 -1`), else right (`low = mid1+1`).
+
+### Hinglish
+Hum chhoti array par binary search karke partition point nikalte hain:
+- Har step par `a` ko `mid1` pe aur `b` ko `left-mid1` pe todte hain.
+- `l1 ≤ r2` aur `l2 ≤ r1` ho to valid partition mil gaya:
+  - Agar elements even ho to median = (max(left) + min(right))/2
+  - Agar odd ho to median = max(left)
+- Agar `l1 > r2` ho to left me jao (`high = mid1-1`), warna right me jao (`low = mid1+1`).
+
+## Patterns / Concepts
+Binary Search on Partition  
+Divide and Conquer  
+Median Property
+
+## Time Complexity
+**O(log(min(n1, n2)))**
+
+## Space Complexity
+**O(1)** — constant extra space.
+
+## Example
+**Input:**  
+`a = [1,4,7,10,12]`, `b = [2,3,6,15]`
+
+**Output:**  
+`6.0`
+
+Combined array: `[1,2,3,4,6,7,10,12,15]`  
+Median is `6`.
+
+## Edge Cases
+**Edge Case 1:**  
+**Input:** `a = []`, `b = [1,2,3]`  
+**Output:** `2.0`
+
+**Edge Case 2:**  
+**Input:** `a = [1]`, `b = [2,3,4]`  
+**Output:** `2.5`
+
+## Code with Comments
+```python
+import sys
+
+def medianOfSortedArray(a, b):
+    n1 = len(a)
+    n2 = len(b)
+
+    # Ensure a is smaller
+    if n1 > n2:
+        return medianOfSortedArray(b, a)
+
+    n = n1 + n2
+    left = (n + 1) // 2
+    low = 0
+    high = n1
+
+    while low <= high:
+        mid1 = (low + high) // 2
+        mid2 = left - mid1
+
+        l1 = -sys.maxsize - 1 if mid1 == 0 else a[mid1 - 1]
+        l2 = -sys.maxsize - 1 if mid2 == 0 else b[mid2 - 1]
+        r1 = sys.maxsize if mid1 == n1 else a[mid1]
+        r2 = sys.maxsize if mid2 == n2 else b[mid2]
+
+        # Valid partition found
+        if l1 <= r2 and l2 <= r1:
+            if n % 2 == 0:
+                return (max(l1, l2) + min(r1, r2)) / 2
+            else:
+                return max(l1, l2)
+        elif l1 > r2:
+            high = mid1 - 1
+        else:
+            low = mid1 + 1
+    return 0
+
+# Example call
+a = [1, 4, 7, 10, 12]
+b = [2, 3, 6, 15]
+print("The median of two sorted arrays is {:.1f}".format(medianOfSortedArray(a, b)))  # Output: 6.0
+```
+
+# k-th Element of Two Sorted Arrays — Binary Search
+
+## Problem Statement
+You are given two sorted arrays `a` and `b` of sizes `m` and `n`, and an integer `k`.  
+Find the **k-th smallest element** in the combined sorted array of `a` and `b`, in **O(log(min(m, n)))** time.
+
+### Example Question Context
+This is a **binary search on partition point** problem, similar to finding median.  
+We find a partition such that exactly `k` elements are on the left half of the merged array.
+
+## Approach / तरीका (English + Hinglish)
+### English
+We binary search on the smaller array to find a valid partition:
+- Partition `a` at index `mid1` and `b` at index `k-mid1`.
+- Calculate `l1, r1` (left/right of `a`) and `l2, r2` (left/right of `b`).
+- If `l1 ≤ r2` and `l2 ≤ r1`, valid partition is found. Return `max(l1, l2)`.
+- If `l1 > r2`, move partition in `a` left (`high = mid1-1`), else right (`low = mid1+1`).
+
+### Hinglish
+Hum chhoti array par binary search karke partition point nikalte hain:
+- `a` ko `mid1` aur `b` ko `k-mid1` pe todte hain.
+- `l1 ≤ r2` aur `l2 ≤ r1` ho to valid partition mil gaya: answer `max(l1,l2)`.
+- Agar `l1 > r2` ho to left me jao (`high = mid1-1`), warna right me jao (`low = mid1+1`).
+
+## Patterns / Concepts
+Binary Search on Partition  
+Divide and Conquer  
+k-th Order Statistic
+
+## Time Complexity
+**O(log(min(m, n)))**
+
+## Space Complexity
+**O(1)** — constant space.
+
+## Example
+**Input:**  
+`a = [2,3,6,7,9]`, `b = [1,4,8,10]`, `k = 5`
+
+**Output:**  
+`6`
+
+Merged array: `[1,2,3,4,6,7,8,9,10]`  
+5-th element is `6`.
+
+## Edge Cases
+**Edge Case 1:**  
+**Input:** `a = []`, `b = [1,2,3,4,5]`, `k = 3`  
+**Output:** `3`
+
+**Edge Case 2:**  
+**Input:** `a = [1]`, `b = [2,3,4]`, `k = 2`  
+**Output:** `2`
+
+## Code with Comments
+```python
+def kthElement(a, b, m, n, k):
+    # Ensure a is the smaller array
+    if m > n:
+        return kthElement(b, a, n, m, k)
+
+    left = k
+
+    low = max(0, k - n)
+    high = min(k, m)
+
+    while low <= high:
+        mid1 = (low + high) // 2
+        mid2 = left - mid1
+
+        # left and right elements around the partitions
+        l1 = float('-inf') if mid1 == 0 else a[mid1 - 1]
+        l2 = float('-inf') if mid2 == 0 else b[mid2 - 1]
+        r1 = float('inf') if mid1 == m else a[mid1]
+        r2 = float('inf') if mid2 == n else b[mid2]
+
+        if l1 <= r2 and l2 <= r1:
+            return max(l1, l2)
+        elif l1 > r2:
+            high = mid1 - 1
+        else:
+            low = mid1 + 1
+
+    return 0  # dummy
+
+# Example call
+a = [2, 3, 6, 7, 9]
+b = [1, 4, 8, 10]
+print("The k-th element of two sorted arrays is:", kthElement(a, b, len(a), len(b), 5))  # Output: 6
+```
+
+# Row with Maximum 1’s in a Binary Matrix — Binary Search
+
+## Problem Statement
+You are given a binary matrix of size `n x m` (each row sorted).  
+Find the **index of the row with the maximum number of 1’s**.  
+If multiple rows have the same number of 1’s, return the smallest index. If no 1’s are present, return `-1`.
+
+### Example Question Context
+Each row is sorted in non-decreasing order (`0`s followed by `1`s).  
+We can use binary search to efficiently find the first occurrence of `1` in each row, and compute the count of `1`s.
+
+## Approach / तरीका (English + Hinglish)
+### English
+We iterate through each row:
+- Use `lowerBound()` (binary search) to find the first index of `1` in the row.
+- Count of `1`s = `m - lowerBound()`.
+- Keep track of the row with the highest count of `1`s.
+
+### Hinglish
+Hum har row par iterate karte hain:
+- Binary search (`lowerBound()`) se pehla `1` ka index nikalte hain.
+- Count of `1`s = `m - lowerBound()`.
+- Sabse zyada `1`s wali row ka index track karte hain.
+
+## Patterns / Concepts
+Binary Search per Row  
+Matrix Traversal  
+Greedy Maximum Tracking
+
+## Time Complexity
+**O(n log m)** — for each row, binary search.
+
+## Space Complexity
+**O(1)** — constant extra space.
+
+## Example
+**Input:**  
+`matrix = [[1,1,1],[0,0,1],[0,0,0]]`, `n = 3`, `m = 3`
+
+**Output:**  
+`0` — first row has 3 ones.
+
+## Edge Cases
+**Edge Case 1:**  
+**Input:** `matrix = [[0,0],[0,0]]`  
+**Output:** `-1` — no 1’s.
+
+**Edge Case 2:**  
+**Input:** `matrix = [[0,1],[0,1]]`  
+**Output:** `0` — smallest index row.
+
+## Code with Comments
+```python
+# Binary search to find first index of 1 in sorted row
+def lowerBound(arr, n, x):
+    low = 0
+    high = n - 1
+    ans = n
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] >= x:
+            ans = mid
+            high = mid - 1
+        else:
+            low = mid + 1
+    return ans
+
+# Main function to find row with max 1s
+def rowWithMax1s(matrix, n, m):
+    cnt_max = 0
+    index = -1
+    for i in range(n):
+        cnt_ones = m - lowerBound(matrix[i], m, 1)
+        if cnt_ones > cnt_max:
+            cnt_max = cnt_ones
+            index = i
+    return index
+
+# Example call
+matrix = [[1, 1, 1], [0, 0, 1], [0, 0, 0]]
+n = 3
+m = 3
+print("The row with maximum no. of 1's is:", rowWithMax1s(matrix, n, m))  # Output: 0
+```
+
+# Search in a 2D Sorted Matrix — Optimized Search
+
+## Problem Statement
+You are given a `n x m` matrix where:
+- Each row is sorted in ascending order from left to right.
+- Each column is sorted in ascending order from top to bottom.
+
+Write a function to check if a given `target` exists in the matrix.
+
+### Example Question Context
+We take advantage of the fact that:
+- Moving left decreases value.
+- Moving down increases value.
+
+We start from the **top-right corner** and eliminate rows or columns based on comparison.
+
+## Approach / तरीका (English + Hinglish)
+### English
+We start at `(0, m-1)` (top-right):
+- If `matrix[row][col] == target`, return `True`.
+- If `matrix[row][col] < target`, move down (`row += 1`).
+- If `matrix[row][col] > target`, move left (`col -= 1`).
+
+### Hinglish
+Hum `(0, m-1)` (top-right) se shuru karte hain:
+- Agar `matrix[row][col] == target`, to `True` return karte hain.
+- Agar `matrix[row][col] < target`, to neeche jao (`row +=1`).
+- Agar `matrix[row][col] > target`, to left jao (`col -=1`).
+
+## Patterns / Concepts
+Matrix Traversal  
+Search Space Reduction  
+Greedy Elimination
+
+## Time Complexity
+**O(n + m)** — at most `n + m` steps.
+
+## Space Complexity
+**O(1)** — constant space.
+
+## Example
+**Input:**  
+`matrix = [[1,4,7,11,15], [2,5,8,12,19], [3,6,9,16,22], [10,13,14,17,24], [18,21,23,26,30]]`,  
+`target = 8`
+
+**Output:**  
+`True`
+
+## Edge Cases
+**Edge Case 1:**  
+**Input:** `target = 100` (greater than all)  
+**Output:** `False`
+
+**Edge Case 2:**  
+**Input:** `target = 1` (smallest)  
+**Output:** `True`
+
+## Code with Comments
+```python
+# Function to search for target in sorted matrix
+def searchElement(matrix, target):
+    n = len(matrix)
+    m = len(matrix[0])
+    row = 0
+    col = m - 1
+
+    # Start from top-right corner
+    while row < n and col >= 0:
+        if matrix[row][col] == target:
+            return True
+        elif matrix[row][col] < target:
+            row += 1  # move down
+        else:
+            col -= 1  # move left
+    return False
+
+# Example call
+matrix = [
+    [1, 4, 7, 11, 15],
+    [2, 5, 8, 12, 19],
+    [3, 6, 9, 16, 22],
+    [10, 13, 14, 17, 24],
+    [18, 21, 23, 26, 30]
+]
+
+result = searchElement(matrix, 8)
+print(result)  # Output: True
+```
+
+#  Search a 2D Matrix II — Optimized Search
+
+## Problem Statement
+You are given a `n x m` matrix where:
+- Each row is sorted in ascending order from left to right.
+- Each column is sorted in ascending order from top to bottom.
+
+## Approach 
+### English
+We start at the **top-right corner** `(0, m-1)`:
+- If `matrix[row][col] == target`, return `True`.
+- If `matrix[row][col] < target`, move down (`row += 1`) — because all elements in current row to the left are smaller.
+- If `matrix[row][col] > target`, move left (`col -= 1`) — because all elements below in current column are larger.
+
+This eliminates one row or one column at each step.
+
+### Hinglish
+Hum `(0, m-1)` (top-right) se start karte hain:
+- Agar `matrix[row][col] == target`, to `True` return karte hain.
+- Agar `matrix[row][col] < target`, to neeche jao (`row += 1`).
+- Agar `matrix[row][col] > target`, to left jao (`col -= 1`).
+
+## Patterns / Concepts
+Matrix Traversal  
+Search Space Reduction  
+Greedy Elimination
+
+## Time Complexity
+**O(n + m)** — each step removes a row or column.
+
+## Space Complexity
+**O(1)** — constant space.
+
+## Example
+**Input:**  
+`matrix = [[1,4,7,11,15], [2,5,8,12,19], [3,6,9,16,22], [10,13,14,17,24], [18,21,23,26,30]]`,  
+`target = 5`
+
+**Output:**  
+`True`
+
+## Edge Cases
+**Edge Case 1:**  
+**Input:** `target = 100` (greater than all)  
+**Output:** `False`
+
+**Edge Case 2:**  
+**Input:** `target = 1` (smallest)  
+**Output:** `True`
+
+## Code with Comments
+```python
+from typing import List
+
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        n = len(matrix)
+        m = len(matrix[0])
+        row = 0
+        col = m - 1
+
+        # Start from top-right corner
+        while row < n and col >= 0:
+            if matrix[row][col] == target:
+                return True
+            elif matrix[row][col] < target:
+                row += 1  # move down
+            else:
+                col -= 1  # move left
+        return False
+
+# Example usage
+matrix = [
+    [1, 4, 7, 11, 15],
+    [2, 5, 8, 12, 19],
+    [3, 6, 9, 16, 22],
+    [10, 13, 14, 17, 24],
+    [18, 21, 23, 26, 30]
+]
+target = 5
+print(Solution().searchMatrix(matrix, target))  # Output: True
+```
+
+# Find Peak Element in a 2D Grid — Binary Search on Columns
+
+## Problem Statement
+You are given a `n x m` matrix. A **peak element** is one which is strictly greater than its left and right neighbors (if they exist).  
+Return the position `[row, col]` of any peak element.
+
+A peak is defined as:  
+`mat[row][col] > mat[row][col-1]` and `mat[row][col] > mat[row][col+1]`
+
+### Example Question Context
+This is an extension of the 1D peak finding problem.  
+We apply binary search **on columns**, finding the maximum in the middle column, and then decide which half to search next.
+
+## Approach / तरीका (English + Hinglish)
+### English
+We perform binary search on columns:
+- In the middle column, find the row index with maximum value.
+- Compare this value with its left and right neighbors.
+  - If it’s greater than both, it’s a peak.
+  - If left neighbor is greater, move to the left half.
+  - If right neighbor is greater, move to the right half.
+
+### Hinglish
+Hum columns par binary search karte hain:
+- Middle column me max element ka row index nikalte hain.
+- Us element ko left aur right neighbors se compare karte hain.
+  - Agar dono se bada ho to ye peak hai.
+  - Agar left bada ho to left half me search karo.
+  - Agar right bada ho to right half me search karo.
+
+## Patterns / Concepts
+Binary Search on 2D Matrix  
+Greedy Elimination of Half Search Space
+
+## Time Complexity
+**O(n log m)** — for each column search, we scan one full column.
+
+## Space Complexity
+**O(1)** — constant extra space.
+
+## Example
+**Input:**  
+`mat = [[10,8,10,10], [14,13,12,11], [15,9,11,21], [16,17,19,20]]`
+
+**Output:**  
+`[2,0]` or another valid peak position.
+
+## Edge Cases
+**Edge Case 1:**  
+**Input:** Single row matrix  
+**Output:** Position of max element.
+
+**Edge Case 2:**  
+**Input:** All elements equal  
+**Output:** Any position.
+
+## Code with Comments
+```python
+from typing import List
+
+# Helper to find row index of max element in a column
+def findMaxIndex(mat, n, m, col):
+    maxValue = -1
+    index = -1
+    for i in range(n):
+        if mat[i][col] > maxValue:
+            maxValue = mat[i][col]
+            index = i
+    return index
+
+# Main function to find peak
+def findPeakGrid(mat: List[List[int]]) -> List[int]:
+    n = len(mat)
+    m = len(mat[0])
+    low = 0
+    high = m - 1
+
+    while low <= high:
+        mid = (low + high) // 2
+        maxRowIndex = findMaxIndex(mat, n, m, mid)
+
+        left = mat[maxRowIndex][mid - 1] if mid > 0 else -1
+        right = mat[maxRowIndex][mid + 1] if mid < m - 1 else -1
+
+        if mat[maxRowIndex][mid] > left and mat[maxRowIndex][mid] > right:
+            return [maxRowIndex, mid]
+        elif mat[maxRowIndex][mid] < left:
+            high = mid - 1
+        else:
+            low = mid + 1
+
+    return [-1, -1]  # fallback if no peak found
+
+# Example usage
+mat = [
+    [10,8,10,10],
+    [14,13,12,11],
+    [15,9,11,21],
+    [16,17,19,20]
+]
+print(findPeakGrid(mat))  # Example Output: [2, 0]
+```
+
+
+# Find Median in a Row-wise Sorted Matrix — Binary Search on Answer
+
+## Problem Statement
+You are given a `m x n` matrix, where each row is sorted in ascending order.  
+Find the median of the matrix.
+
+### Example Question Context
+Since the matrix is not fully sorted, but each row is sorted, we cannot flatten it and sort in `O(nm log(nm))`.  
+Instead, we use binary search on the value range.
+
+## Approach / तरीका (English + Hinglish)
+### English
+We know:
+- The smallest possible element is `min(matrix[i][0])`
+- The largest possible element is `max(matrix[i][n-1])`
+We perform binary search on this range.
+For a candidate `mid`, count how many elements in the matrix are `<= mid`.  
+- If count ≤ required (half of total), move right.
+- Else, move left.
+
+### Hinglish
+Sabse chhota element har row ke first element me se minimum hoga.  
+Sabse bada element har row ke last element me se maximum hoga.  
+Hum unke beech value range par binary search karte hain.
+Mid leke dekhte hain kitne elements `<= mid` hain.  
+- Agar count ≤ required, to right me jao.
+- Warna left me jao.
+
+## Patterns / Concepts
+Binary Search on Answer  
+Matrix Row-wise Sorted Property  
+Upper Bound in Row
+
+## Time Complexity
+**O(32 * m * log n)** — 32 for value range (since integers ≤ 2³²), and `log n` per row binary search.
+
+## Space Complexity
+**O(1)** — constant extra space.
+
+## Example
+**Input:**  
+`matrix = [[1,2,3,4,5], [8,9,11,12,13], [21,23,25,27,29]]`
+
+**Output:**  
+`11`
+
+## Edge Cases
+**Edge Case 1:**  
+Matrix of size `1x1` → Median is the only element.
+
+**Edge Case 2:**  
+All elements are equal → Median is the same element.
+
+## Code with Comments
+```python
+def upperBound(arr, x, n):
+    low = 0
+    high = n - 1
+    ans = n
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] > x:
+            ans = mid
+            high = mid - 1
+        else:
+            low = mid + 1
+    return ans
+
+# Count how many elements ≤ x in matrix
+def countSmallEqual(matrix, m, n, x):
+    cnt = 0
+    for i in range(m):
+        cnt += upperBound(matrix[i], x, n)
+    return cnt
+
+# Main function to find median
+def median(matrix, m, n):
+    low = float('inf')
+    high = float('-inf')
+    for i in range(m):
+        low = min(low, matrix[i][0])
+        high = max(high, matrix[i][n - 1])
+
+    req = (n * m) // 2
+    while low <= high:
+        mid = (low + high) // 2
+        smallEqual = countSmallEqual(matrix, m, n, mid)
+        if smallEqual <= req:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return low
+
+# Example usage
+if __name__ == "__main__":
+    matrix = [
+        [1, 2, 3, 4, 5],
+        [8, 9, 11, 12, 13],
+        [21, 23, 25, 27, 29]
+    ]
+    m = len(matrix)
+    n = len(matrix[0])
+    ans = median(matrix, m, n)
+    print("The median element is:", ans)  # Output: 11
+```
+
