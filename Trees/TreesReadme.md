@@ -1475,3 +1475,291 @@ def rightView(root):
 ```
 
 ---
+
+### 19. Root-to-Node Path in Binary Tree
+
+#### Problem Statement
+Given the root of a binary tree and an integer `x`, return the path from the **root to the node containing value `x`** as a list of values.  
+If the node with value `x` does not exist in the tree, return an empty list.
+
+---
+
+#### Approach
+**English:**  
+We use a simple **DFS (Depth First Search)** with recursion:  
+- At each node, add the node’s value to the current path (`ds`).  
+- If the current node matches `x`, return `True` (path is found).  
+- Recursively check the left and right subtrees.  
+- If neither returns `True`, remove (backtrack) the current node from the path and return `False`.  
+- At the end, the `ds` list will contain the path if `x` is found.
+
+**Hinglish:**  
+Hum **DFS (recursion)** use karte hain:  
+- Har node pe apni value ko current path (`ds`) me daal dete hain.  
+- Agar current node ka value `x` hai, to `True` return kar dete hain.  
+- Left aur right subtree me recursively check karte hain.  
+- Agar dono me `x` nahi mila, to current node ko path (`ds`) se hata dete hain (backtrack) aur `False` return karte hain.  
+- DFS ke baad `ds` me path hoga agar `x` mila.
+
+---
+
+#### Example
+Input:  
+```
+       1
+      / \
+     2   3
+    / \
+   4   5
+```
+x = 5
+
+Output:  
+`[1, 2, 5]`
+
+---
+
+#### Code
+```python
+def rootToNode(root, x):
+    def helper(node, ds, x):
+        if not node:
+            return False
+        
+        ds.append(node.value)
+        
+        if node.value == x:
+            return True
+        
+        if helper(node.left, ds, x) or helper(node.right, ds, x):
+            return True
+        
+        ds.pop()  # backtrack if x not found in this path
+        return False
+    
+    ds = []
+    helper(root, ds, x)
+    return ds
+```
+
+---
+### 20. Lowest Common Ancestor (LCA) in Binary Tree
+
+#### Problem Statement
+Given the root of a binary tree and two nodes `p` and `q`, find their **Lowest Common Ancestor (LCA)**.  
+The LCA of two nodes `p` and `q` is the lowest node in the tree that has both `p` and `q` as descendants (where we allow a node to be a descendant of itself).
+
+---
+
+#### Approach
+**English:**  
+We use a **recursive DFS** approach:  
+- If the current `root` is `None`, `p`, or `q`, we return `root`.  
+- Recursively find LCA in the left subtree and the right subtree.  
+- If both left and right recursive calls return non-`None`, then `root` is the LCA (because `p` and `q` are in different subtrees).  
+- Otherwise, return whichever is not `None`.
+
+**Hinglish:**  
+Hum **recursive DFS** approach use karte hain:  
+- Agar current `root` me se koi `None`, `p`, ya `q` ho to wahi return kar dete hain.  
+- Left aur right subtree me recursively LCA dhoondte hain.  
+- Agar left aur right dono me `None` nahi hai to current `root` hi LCA hai (kyuki `p` aur `q` alag subtrees me hain).  
+- Nahi to jo bhi `None` nahi hai wahi return karte hain.
+
+---
+
+#### Example
+Input:  
+```
+       3
+      / \
+     5   1
+    / \ / \
+   6  2 0  8
+     / \
+    7   4
+```
+p = 5, q = 1  
+Output:  
+`3`
+
+---
+
+#### Code
+```python
+def lowestCommonAncestor(self, root, p, q):
+    if not root or root == p or root == q:
+        return root
+
+    left = self.lowestCommonAncestor(root.left, p, q)
+    right = self.lowestCommonAncestor(root.right, p, q)
+
+    if left and right:
+        return root  # p and q found in different subtrees
+
+    return left if left else right
+```
+
+---
+
+### 21. Maximum Width of Binary Tree
+
+#### Problem Statement
+Given the root of a binary tree, return the **maximum width of the tree**.  
+The width of a level is defined as the length between the leftmost and rightmost non-null nodes at that level (including `null`s in-between).
+
+---
+
+#### Approach
+**English:**  
+We use **Level Order Traversal (BFS)** and assign a positional index to each node:  
+- Root is at index `0`.  
+- For each node at index `i`, its left child gets index `2*i+1` and right child gets `2*i+2`.  
+- For each level, calculate the width as `last_index - first_index + 1`.  
+- Keep track of the maximum width encountered across all levels.  
+
+**Hinglish:**  
+Hum **BFS (Level Order Traversal)** karte hain aur har node ko ek index assign karte hain:  
+- Root ka index `0` hota hai.  
+- Left child ka index `2*i+1` aur right child ka index `2*i+2` hota hai.  
+- Har level me `last_index - first_index + 1` se width nikalte hain.  
+- Sabhi levels me se maximum width ko track karte hain.
+
+---
+
+#### Example
+Input:  
+```
+       1
+      / \
+     3   2
+    /     \
+   5       9
+  /         \
+ 6           7
+```
+
+Output:  
+`8`
+
+---
+
+#### Code
+```python
+from collections import deque
+
+def maxWidthOfTree(root):
+    if not root:
+        return 0
+    ans = 0
+    q = deque()
+    q.append((root, 0))
+    while q:
+        size = len(q)
+        mmin = q[0][1]
+        first, last = None, None
+        for i in range(size):
+            node, idx = q.popleft()
+            currid = idx - mmin
+            if i == 0:
+                first = currid
+            if i == size - 1:
+                last = currid
+            if node.left:
+                q.append((node.left, currid * 2 + 1))
+            if node.right:
+                q.append((node.right, currid * 2 + 2))
+        ans = max(ans, last - first + 1)
+    return ans
+```
+
+---
+
+### 22. Children Sum Property in Binary Tree
+
+#### Problem Statement
+Modify the given binary tree so that it satisfies the **Children Sum Property**,  
+i.e., for every node, its value becomes equal to the sum of its children's values.  
+You can only **increase node values**, never decrease them.
+
+---
+
+#### Approach
+**English:**  
+We solve this using **Postorder Traversal (Bottom-Up DFS)**:  
+- At each node, calculate the sum of its left and right children's values (`child`).  
+- If `child >= root.value`, then set `root.value = child`.  
+- Otherwise, propagate `root.value` down to its children by setting their values to at least `root.value`.  
+- Recur for left and right subtrees.  
+- On returning back up, update the current `root.value` to the sum of updated children’s values if it is not a leaf.
+
+**Hinglish:**  
+Hum **postorder traversal (bottom-up)** karte hain:  
+- Har node ke left aur right child ka sum (`child`) calculate karte hain.  
+- Agar `child >= root.value`, to `root.value = child`.  
+- Nahi to, apni value ko children me propagate kar dete hain.  
+- Fir left aur right subtree me recurse karte hain.  
+- Wapas aate hue apni value ko updated children ke sum ke barabar kar dete hain (agar leaf nahi hai).
+
+---
+
+#### Example
+Input:  
+```
+        50
+       /  \
+      7    2
+     / \  / 
+    3  5 1  
+```
+
+Output:  
+```
+        50
+       /  \
+     12   38
+     / \  /
+    3  9 1
+```
+
+---
+
+#### Code
+```python
+def childrenSumProperty(root):
+    if not root:
+        return
+
+    # Step 1: Get sum of children
+    child = 0
+    if root.left:
+        child += root.left.value
+    if root.right:
+        child += root.right.value
+
+    # Step 2: If child sum >= root, update root
+    if child >= root.value:
+        root.value = child
+    else:
+        # Else propagate root's value down
+        if root.left:
+            root.left.value = root.value
+        if root.right:
+            root.right.value = root.value
+
+    # Step 3: Recur for left and right
+    childrenSumProperty(root.left)
+    childrenSumProperty(root.right)
+
+    # Step 4: Update root value to sum of updated children
+    tot = 0
+    if root.left:
+        tot += root.left.value
+    if root.right:
+        tot += root.right.value
+
+    if root.left or root.right:
+        root.value = tot
+```
+
+---
